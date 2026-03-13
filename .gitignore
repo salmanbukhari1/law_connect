@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
+# Database (local dev only — do not commit)
+local.db
+local.db-shm
+local.db-wal
+
+# Environment files (contain secrets)
+.env.local
+.env*.local
+
+# OS / Editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Drizzle migrations (generated, but can commit if desired)
+# src/lib/db/migrations/
