@@ -1,0 +1,153 @@
+/* ── Centred state containers (pending / failed / empty) ───────────────── */
+.stateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px;
+  flex: 1;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  border-top-color: transparent;
+}
+
+.statusIcon {
+  font-size: 40px;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  opacity: 0.6;
+}
+
+.statusTitle {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--danger);
+}
+
+.statusMessage {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.statusSubtext {
+  font-size: 12px;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.emptyTitle {
+  font-size: 15px;
+  margin: 0;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.emptySubtext {
+  font-size: 13px;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* ── Main scroll area ──────────────────────────────────────────────────── */
+.scrollArea {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ── Active items section ──────────────────────────────────────────────── */
+.sectionGroup {
+  margin-bottom: 32px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.sectionDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.countBadge {
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 100px;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Archived accordion ────────────────────────────────────────────────── */
+.archiveToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  width: 100%;
+  text-align: left;
+  transition: border-color 0.15s;
+  margin-bottom: 0;
+}
+
+.archiveToggle[data-open='true'] {
+  margin-bottom: 12px;
+}
+
+.archiveChevron {
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+.archiveChevron[data-open='true'] {
+  transform: rotate(90deg);
+}
+
+.archiveList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

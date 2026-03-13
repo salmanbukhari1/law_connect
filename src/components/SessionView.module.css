@@ -1,0 +1,61 @@
+/* ── Full-flex centred state message (loading / error) ─────────────────── */
+.stateMessage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.stateMessage--error {
+  color: var(--danger);
+}
+
+/* ── Session root ──────────────────────────────────────────────────────── */
+.sessionRoot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Session header ────────────────────────────────────────────────────── */
+.header {
+  padding: 16px 24px 0;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.revisionMeta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ── Status badge ──────────────────────────────────────────────────────── */
+.badge {
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  /* colour tokens set via --badge-color / --badge-bg inline style props */
+  color: var(--badge-color);
+  background: var(--badge-bg);
+}

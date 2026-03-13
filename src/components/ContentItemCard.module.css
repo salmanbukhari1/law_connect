@@ -1,0 +1,140 @@
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  position: relative;
+}
+
+.card[data-archived='true'] {
+  background: var(--bg-surface);
+  border-color: var(--border-subtle);
+  opacity: 0.6;
+}
+
+/* ── Header row ──────────────────────────────────────────────────────────── */
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.titleArea {
+  flex: 1;
+}
+
+.archivedTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ── Action row (delete buttons) ─────────────────────────────────────────── */
+.actionRow {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.confirmDeleteButton {
+  padding: 3px 8px;
+  background: var(--danger);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.cancelConfirmButton {
+  padding: 3px 8px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.deleteButton:hover {
+  color: var(--danger);
+}
+
+/* ── Body text ───────────────────────────────────────────────────────────── */
+.body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ── Saving indicator dot ────────────────────────────────────────────────── */
+.savingDot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ── Category badge (layout only; colour set via CSS var inline) ─────────── */
+.categoryBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  /* colour, background, border are set via --cat-color inline prop */
+  color: var(--cat-color);
+  background: color-mix(in srgb, var(--cat-color) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cat-color) 27%, transparent);
+}
+
+/* ── Editable span ───────────────────────────────────────────────────────── */
+.editableSpan {
+  cursor: text;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.15s;
+}
+
+.editableSpan:hover {
+  border-bottom-color: var(--border);
+}
+
+/* ── Editable inputs ─────────────────────────────────────────────────────── */
+.editInput,
+.editTextarea {
+  background: var(--bg-base);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  padding: 4px 8px;
+  width: 100%;
+}
+
+.editTextarea {
+  resize: vertical;
+  line-height: 1.5;
+}

@@ -5,6 +5,7 @@ import { fetchSessionDetail } from '@/lib/api-client';
 import { PromptComposer } from './PromptComposer';
 import { OutputViewer } from './OutputViewer';
 import { useEffect } from 'react';
+import styles from './SessionView.module.css';
 
 interface Props {
   sessionId: number;
@@ -30,34 +31,12 @@ export function SessionView({ sessionId }: Props) {
   }, [data?.session.status, qc]);
 
   if (isLoading) {
-    return (
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--text-muted)',
-          fontSize: 14,
-        }}
-      >
-        Loading session…
-      </div>
-    );
+    return <div className={styles.stateMessage}>Loading session…</div>;
   }
 
   if (isError || !data) {
     return (
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#ef4444',
-          fontSize: 14,
-        }}
-      >
+      <div className={`${styles.stateMessage} ${styles['stateMessage--error']}`}>
         Failed to load session. Please try again.
       </div>
     );
@@ -67,32 +46,15 @@ export function SessionView({ sessionId }: Props) {
   const latestRevision = revisions[0];
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
+    <div className={styles.sessionRoot}>
       {/* Session header */}
-      <div
-        style={{
-          padding: '16px 24px 0',
-          background: 'var(--bg-surface)',
-          borderBottom: '1px solid var(--border-subtle)',
-          paddingBottom: 0,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 18,
-              fontWeight: 700,
-              color: 'var(--text-primary)',
-              flex: 1,
-            }}
-          >
-            {session.name}
-          </h1>
+      <div className={styles.header}>
+        <div className={styles.headerRow}>
+          <h1 className={styles.title}>{session.name}</h1>
           {/* Status badge */}
           <StatusBadge status={session.status} />
           {revisions.length > 0 && (
-            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+            <span className={styles.revisionMeta}>
               v{latestRevision?.version} · {revisions.length} revision{revisions.length !== 1 ? 's' : ''}
             </span>
           )}
@@ -113,26 +75,19 @@ export function SessionView({ sessionId }: Props) {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { label: string; color: string; bg: string }> = {
-    idle: { label: 'Idle', color: 'var(--text-muted)', bg: 'var(--bg-elevated)' },
-    pending: { label: '⟳ Running', color: '#6c63ff', bg: 'rgba(108,99,255,0.15)' },
-    completed: { label: '✓ Completed', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
-    failed: { label: '✕ Failed', color: '#ef4444', bg: 'rgba(239,68,68,0.12)' },
-  };
-  const cfg = config[status] ?? config.idle;
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  idle:      { label: 'Idle',        color: 'var(--text-muted)', bg: 'var(--bg-elevated)' },
+  pending:   { label: '⟳ Running',   color: 'var(--accent)',     bg: 'var(--accent-glow)' },
+  completed: { label: '✓ Completed', color: 'var(--success)',    bg: 'rgba(34,197,94,0.12)' },
+  failed:    { label: '✕ Failed',    color: 'var(--danger)',     bg: 'rgba(239,68,68,0.12)' },
+};
 
+function StatusBadge({ status }: { status: string }) {
+  const cfg = STATUS_CONFIG[status] ?? STATUS_CONFIG.idle;
   return (
     <span
-      style={{
-        padding: '3px 10px',
-        borderRadius: 100,
-        fontSize: 11,
-        fontWeight: 600,
-        color: cfg.color,
-        background: cfg.bg,
-        letterSpacing: '0.03em',
-      }}
+      className={styles.badge}
+      style={{ '--badge-color': cfg.color, '--badge-bg': cfg.bg } as React.CSSProperties}
     >
       {cfg.label}
     </span>

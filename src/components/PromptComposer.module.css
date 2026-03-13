@@ -1,0 +1,154 @@
+/* ── Outer wrapper ──────────────────────────────────────────────────────── */
+.composerWrapper {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 20px 24px;
+}
+
+/* ── Textarea wrapper ───────────────────────────────────────────────────── */
+.textareaWrap {
+  position: relative;
+}
+
+.textarea {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px 36px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s, opacity 0.15s;
+}
+
+.textarea:focus {
+  border-color: var(--accent);
+}
+
+.textarea[data-pending='true'] {
+  opacity: 0.7;
+}
+
+/* ── Char count + submit overlay ────────────────────────────────────────── */
+.overlay {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.charCount {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.submitButton {
+  padding: 5px 14px;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.submitButton[data-pending='true'],
+.submitButton:disabled {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* ── Error banner ───────────────────────────────────────────────────────── */
+.errorBanner {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* ── Regenerate confirmation modal ──────────────────────────────────────── */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 32px;
+  max-width: 440px;
+  width: 90%;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+
+.modalTitle {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modalBody {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.modalBody strong {
+  color: var(--text-primary);
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  padding: 8px 18px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.confirmButton {
+  padding: 8px 18px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.confirmButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}

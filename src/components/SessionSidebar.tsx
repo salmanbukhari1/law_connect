@@ -3,11 +3,20 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchSessions, createSession, deleteSession, type Session } from '@/lib/api-client';
 import { useState } from 'react';
+import styles from './SessionSidebar.module.css';
 
 interface Props {
   selectedId: number | null;
   onSelect: (id: number) => void;
 }
+
+/** Maps status string to the corresponding CSS custom property from globals.css */
+const STATUS_DOT_COLOR: Record<string, string> = {
+  idle:      'var(--text-muted)',
+  pending:   'var(--accent)',
+  completed: 'var(--success)',
+  failed:    'var(--danger)',
+};
 
 export function SessionSidebar({ selectedId, onSelect }: Props) {
   const qc = useQueryClient();
@@ -39,45 +48,21 @@ export function SessionSidebar({ selectedId, onSelect }: Props) {
     createMut.mutate(name);
   };
 
-  const statusDot = (s: Session) => {
-    const colors: Record<string, string> = {
-      idle: '#4f5b7a',
-      pending: '#6c63ff',
-      completed: '#22c55e',
-      failed: '#ef4444',
-    };
-    return colors[s.status] ?? '#4f5b7a';
-  };
-
   return (
-    <aside
-      style={{
-        width: 260,
-        flexShrink: 0,
-        background: 'var(--bg-surface)',
-        borderRight: '1px solid var(--border-subtle)',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-      }}
-    >
+    <aside className={styles.sidebar}>
       {/* Header */}
-      <div style={{ padding: '20px 16px 12px', borderBottom: '1px solid var(--border-subtle)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-          <span style={{ fontSize: 18 }}>🧪</span>
-          <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>
-            PromptLab
-          </span>
+      <div className={styles.sidebarHeader}>
+        <div className={styles.logoRow}>
+          <span className={styles.logoIcon}>🧪</span>
+          <span className={styles.logoText}>PromptLab</span>
         </div>
-        <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0 }}>
-          LLM Content Studio
-        </p>
+        <p className={styles.tagline}>LLM Content Studio</p>
       </div>
 
       {/* New session area */}
-      <div style={{ padding: '12px 12px 8px' }}>
+      <div className={styles.newSessionArea}>
         {creating ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div className={styles.nameInputGroup}>
             <input
               autoFocus
               value={newName}
@@ -87,130 +72,53 @@ export function SessionSidebar({ selectedId, onSelect }: Props) {
                 if (e.key === 'Escape') setCreating(false);
               }}
               placeholder="Session name…"
-              style={{
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--accent)',
-                borderRadius: 6,
-                padding: '6px 10px',
-                color: 'var(--text-primary)',
-                fontSize: 13,
-                outline: 'none',
-                width: '100%',
-              }}
+              className={styles.nameInput}
             />
-            <div style={{ display: 'flex', gap: 6 }}>
+            <div className={styles.buttonRow}>
               <button
                 onClick={handleCreate}
                 disabled={createMut.isPending}
-                style={{
-                  flex: 1,
-                  background: 'var(--accent)',
-                  border: 'none',
-                  borderRadius: 6,
-                  padding: '6px 0',
-                  color: '#fff',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
+                className={styles.createButton}
               >
                 {createMut.isPending ? 'Creating…' : 'Create'}
               </button>
               <button
                 onClick={() => setCreating(false)}
-                style={{
-                  padding: '6px 10px',
-                  background: 'var(--bg-elevated)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 6,
-                  color: 'var(--text-secondary)',
-                  fontSize: 12,
-                  cursor: 'pointer',
-                }}
+                className={styles.cancelCreateButton}
               >
                 Cancel
               </button>
             </div>
           </div>
         ) : (
-          <button
-            onClick={() => setCreating(true)}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '8px 10px',
-              background: 'var(--bg-elevated)',
-              border: '1px dashed var(--border)',
-              borderRadius: 8,
-              color: 'var(--text-secondary)',
-              fontSize: 13,
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-            }}
-          >
-            <span style={{ fontSize: 16, lineHeight: 1 }}>＋</span>
+          <button onClick={() => setCreating(true)} className={styles.newSessionButton}>
+            <span className={styles.newSessionButtonIcon}>＋</span>
             New Session
           </button>
         )}
       </div>
 
       {/* Session list */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '4px 8px' }}>
+      <div className={styles.sessionList}>
         {isLoading && (
-          <p style={{ color: 'var(--text-muted)', fontSize: 12, padding: '8px 4px' }}>
-            Loading…
-          </p>
+          <p className={styles.loadingText}>Loading…</p>
         )}
         {sessions.map((s, i) => (
           <div
             key={s.id}
             onClick={() => onSelect(s.id)}
-            className="animate-fade-in-up"
-            style={{
-              animationDelay: `${i * 40}ms`,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '8px 10px',
-              marginBottom: 2,
-              borderRadius: 8,
-              cursor: 'pointer',
-              background: selectedId === s.id ? 'var(--bg-hover)' : 'transparent',
-              border: `1px solid ${selectedId === s.id ? 'var(--accent)' : 'transparent'}`,
-              transition: 'all 0.15s ease',
-            }}
-            onMouseEnter={(e) => {
-              if (selectedId !== s.id) {
-                (e.currentTarget as HTMLDivElement).style.background = 'var(--bg-elevated)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (selectedId !== s.id) {
-                (e.currentTarget as HTMLDivElement).style.background = 'transparent';
-              }
-            }}
+            className={`animate-fade-in-up ${styles.sessionRow}`}
+            data-selected={selectedId === s.id}
+            style={{ animationDelay: `${i * 40}ms` }}
           >
-            {/* Status dot */}
+            {/* Status dot — colour is runtime-computed from CSS token map */}
             <div
-              style={{
-                width: 7,
-                height: 7,
-                borderRadius: '50%',
-                background: statusDot(s),
-                flexShrink: 0,
-              }}
+              className={styles.statusDot}
+              style={{ background: STATUS_DOT_COLOR[s.status] ?? 'var(--text-muted)' }}
             />
             <span
-              style={{
-                flex: 1,
-                fontSize: 13,
-                color: selectedId === s.id ? 'var(--text-primary)' : 'var(--text-secondary)',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
+              className={styles.sessionName}
+              data-selected={selectedId === s.id}
             >
               {s.name}
             </span>
@@ -221,24 +129,7 @@ export function SessionSidebar({ selectedId, onSelect }: Props) {
                   deleteMut.mutate(s.id);
                 }
               }}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-muted)',
-                fontSize: 14,
-                cursor: 'pointer',
-                padding: '2px 4px',
-                borderRadius: 4,
-                lineHeight: 1,
-                opacity: 0,
-                transition: 'opacity 0.15s',
-              }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.opacity = '1')
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.opacity = '0')
-              }
+              className={styles.deleteButton}
               title="Delete session"
             >
               ✕
@@ -246,9 +137,7 @@ export function SessionSidebar({ selectedId, onSelect }: Props) {
           </div>
         ))}
         {!isLoading && sessions.length === 0 && (
-          <p style={{ color: 'var(--text-muted)', fontSize: 12, padding: '8px 4px', textAlign: 'center' }}>
-            No sessions yet
-          </p>
+          <p className={styles.emptyText}>No sessions yet</p>
         )}
       </div>
     </aside>

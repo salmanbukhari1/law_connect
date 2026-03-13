@@ -3,33 +3,24 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateItem, deleteItem, type ContentItem } from '@/lib/api-client';
+import styles from './ContentItemCard.module.css';
 
 const CATEGORY_COLORS: Record<string, string> = {
-  tip: '#22c55e',
-  warning: '#f59e0b',
-  idea: '#6c63ff',
-  example: '#06b6d4',
-  step: '#3b82f6',
-  info: '#8b97b8',
+  tip: 'var(--success)',
+  warning: 'var(--warning)',
+  idea: 'var(--accent)',
+  example: 'var(--text-secondary)', // #06b6d4 maps roughly to this or needs a new token, text-secondary fits well
+  step: 'var(--pending)', // #3b82f6 -> using pending which is blue/accent
+  info: 'var(--text-secondary)',
 };
 
 function CategoryBadge({ category }: { category?: string | null }) {
   if (!category) return null;
-  const color = CATEGORY_COLORS[category.toLowerCase()] ?? '#4f5b7a';
+  const color = CATEGORY_COLORS[category.toLowerCase()] ?? 'var(--text-muted)';
   return (
     <span
-      style={{
-        display: 'inline-block',
-        padding: '2px 8px',
-        borderRadius: 100,
-        fontSize: 10,
-        fontWeight: 600,
-        textTransform: 'uppercase',
-        letterSpacing: '0.06em',
-        color,
-        background: `${color}22`,
-        border: `1px solid ${color}44`,
-      }}
+      className={styles.categoryBadge}
+      style={{ '--cat-color': color } as React.CSSProperties}
     >
       {category}
     </span>
@@ -40,10 +31,10 @@ interface EditableFieldProps {
   value: string;
   onSave: (val: string) => void;
   multiline?: boolean;
-  style?: React.CSSProperties;
+  className?: string; // Replace style prop with className
 }
 
-function EditableField({ value, onSave, multiline, style }: EditableFieldProps) {
+function EditableField({ value, onSave, multiline, className = '' }: EditableFieldProps) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
 
@@ -62,35 +53,12 @@ function EditableField({ value, onSave, multiline, style }: EditableFieldProps) 
           setEditing(true);
         }}
         title="Click to edit"
-        style={{
-          cursor: 'text',
-          borderBottom: '1px dashed transparent',
-          transition: 'border-color 0.15s',
-          ...style,
-        }}
-        onMouseEnter={(e) =>
-          ((e.currentTarget as HTMLSpanElement).style.borderBottomColor = 'var(--border)')
-        }
-        onMouseLeave={(e) =>
-          ((e.currentTarget as HTMLSpanElement).style.borderBottomColor = 'transparent')
-        }
+        className={`${styles.editableSpan} ${className}`.trim()}
       >
         {value}
       </span>
     );
   }
-
-  const sharedStyle: React.CSSProperties = {
-    background: 'var(--bg-base)',
-    border: '1px solid var(--accent)',
-    borderRadius: 6,
-    color: 'var(--text-primary)',
-    fontFamily: 'inherit',
-    outline: 'none',
-    padding: '4px 8px',
-    width: '100%',
-    ...style,
-  };
 
   if (multiline) {
     return (
@@ -106,7 +74,7 @@ function EditableField({ value, onSave, multiline, style }: EditableFieldProps) 
             setEditing(false);
           }
         }}
-        style={{ ...sharedStyle, resize: 'vertical', lineHeight: 1.5 }}
+        className={`${styles.editTextarea} ${className}`.trim()}
       />
     );
   }
@@ -124,7 +92,7 @@ function EditableField({ value, onSave, multiline, style }: EditableFieldProps) 
           setEditing(false);
         }
       }}
-      style={sharedStyle}
+      className={`${styles.editInput} ${className}`.trim()}
     />
   );
 }
@@ -153,63 +121,39 @@ export function ContentItemCard({ item, sessionId, index, archived = false }: Pr
 
   return (
     <div
-      className="animate-fade-in-up"
-      style={{
-        animationDelay: `${index * 60}ms`,
-        background: archived ? 'var(--bg-surface)' : 'var(--bg-elevated)',
-        border: `1px solid ${archived ? 'var(--border-subtle)' : 'var(--border)'}`,
-        borderRadius: 12,
-        padding: '16px 18px',
-        position: 'relative',
-        opacity: archived ? 0.6 : 1,
-      }}
+      className={`animate-fade-in-up ${styles.card}`}
+      data-archived={archived}
+      style={{ animationDelay: `${index * 60}ms` }}
     >
       {/* Header row */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 8 }}>
-        <div style={{ flex: 1 }}>
+      <div className={styles.headerRow}>
+        <div className={styles.titleArea}>
           {archived ? (
-            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)' }}>
+            <span className={styles.archivedTitle}>
               {item.title}
             </span>
           ) : (
             <EditableField
               value={item.title}
               onSave={(title) => patchMut.mutate({ title })}
-              style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}
+              className={styles.archivedTitle} // matches title styling font-size/weight
             />
           )}
         </div>
         <CategoryBadge category={item.category} />
         {!archived && (
-          <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+          <div className={styles.actionRow}>
             {deleteConfirm ? (
               <>
                 <button
                   onClick={() => deleteMut.mutate()}
-                  style={{
-                    padding: '3px 8px',
-                    background: 'var(--danger)',
-                    border: 'none',
-                    borderRadius: 6,
-                    color: '#fff',
-                    fontSize: 11,
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                  }}
+                  className={styles.confirmDeleteButton}
                 >
                   Delete
                 </button>
                 <button
                   onClick={() => setDeleteConfirm(false)}
-                  style={{
-                    padding: '3px 8px',
-                    background: 'var(--bg-hover)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 6,
-                    color: 'var(--text-secondary)',
-                    fontSize: 11,
-                    cursor: 'pointer',
-                  }}
+                  className={styles.cancelConfirmButton}
                 >
                   Cancel
                 </button>
@@ -218,22 +162,7 @@ export function ContentItemCard({ item, sessionId, index, archived = false }: Pr
               <button
                 onClick={() => setDeleteConfirm(true)}
                 title="Delete item"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--text-muted)',
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  padding: '2px 6px',
-                  borderRadius: 4,
-                  lineHeight: 1,
-                }}
-                onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLButtonElement).style.color = 'var(--danger)')
-                }
-                onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)')
-                }
+                className={styles.deleteButton}
               >
                 🗑
               </button>
@@ -243,7 +172,7 @@ export function ContentItemCard({ item, sessionId, index, archived = false }: Pr
       </div>
 
       {/* Body */}
-      <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+      <div className={styles.body}>
         {archived ? (
           <span>{item.body}</span>
         ) : (
@@ -251,24 +180,13 @@ export function ContentItemCard({ item, sessionId, index, archived = false }: Pr
             value={item.body}
             onSave={(body) => patchMut.mutate({ body })}
             multiline
-            style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}
+            // Default styling for EditableField matches body text
           />
         )}
       </div>
 
       {patchMut.isPending && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            width: 6,
-            height: 6,
-            borderRadius: '50%',
-            background: 'var(--accent)',
-          }}
-          title="Saving…"
-        />
+        <div className={styles.savingDot} title="Saving…" />
       )}
     </div>
   );
